@@ -15,6 +15,7 @@ board = initBoard()
 
 pygame.init()
 dimensions =(800,800)
+dimensionCase = 70
 ecran = pygame.display.set_mode(dimensions)
 continuer = True 
 y,x =100,100                    # où commence le positionnement des picèces
@@ -27,8 +28,11 @@ while continuer:
     for i in range (7):
         x=0
         for j in range (7):
-            if abs(board[i][j]==0): #la case est bide 
-                x+=70
+            if (i + j) %2 == 0 : pygame.draw.rect(ecran , (201, 209, 242),(x,y,dimensionCase,dimensionCase))
+            else : pygame.draw.rect(ecran ,  (89, 113, 212),(x,y,dimensionCase,dimensionCase))
+
+            if abs(board[i][j]==0): #la case est vide 
+                x+=dimensionCase
                 continue 
             if ((board[i][j])<0): #la pièce est blanche
                 txt= "images/b_"
@@ -50,9 +54,9 @@ while continuer:
             txt = txt+".png"
             piece = pygame.image.load(txt).convert_alpha()
             ecran.blit(piece,(x,y))#placer l'image
-            pygame.display.flip()  #acctualiser    
+            pygame.display.flip()  # actualise    
             
-            x+=70
-        y+=70
+            x+=dimensionCase
+        y+=dimensionCase
             
 pygame.quit()
