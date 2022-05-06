@@ -1,7 +1,7 @@
 import pygame
 
 
-# initialisation du plateau
+# initialisation board
 def initBoard() :  
     board =[[-5,-2,-3,-9,-50,-3,-2,-5],
             [-1,-1,-1,-1,-1,-1,-1,-1],
@@ -16,16 +16,15 @@ def initBoard() :
 board = initBoard()
 
 class Case: 
-    def __init__(self,ecran,nom,x,y,couleur,piece):
+    def __init__(self,ecran,nom,x,y,color,piece):
         self.nom = nom
         self.x = x 
         self.y = y 
         self.piece = piece
-        self.couleur =couleur
-    
+        self.color =color
 
-
-        pygame.draw.rect(ecran ,  (couleur),(x,y,dimensionCase,dimensionCase))
+### load piece
+        pygame.draw.rect(ecran ,  (color),(x,y,dimensionCase,dimensionCase))
         txt= ""
         if (piece == 0 ): 
             return
@@ -53,15 +52,17 @@ class Case:
         
     def getNom(self):
         return self.nom
-    def activerCase(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
-                continuer = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x,y = pygame.mouse.get_pos()
-                print (x,y)                   
-                if self.x <= x <= self.x+dimensionCase and self.y <= y <= self.y+dimensionCase:
-                    print(self.nom)
+    
+    def activeCase(self,event):
+
+        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+            continuer = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x,y = pygame.mouse.get_pos()
+            # print ("cursor is in : ",x,y)             
+            # print ("you are in case : ", self.nom)                   
+            if self.x <= x <= self.x+dimensionCase and self.y <= y <= self.y+dimensionCase: # if cursos in case , return the name of the case
+                print(self.nom)
 
 
 pygame.init()
@@ -71,46 +72,69 @@ dimensions =(700,700)
 dimensionCase = 70
 ecran = pygame.display.set_mode(dimensions)
 continuer = True 
-listeCases = []
-nb=65
-yInitial,xInitiale =100,100  # où commence le positionnement des picèces
-
-pygame.draw.rect(ecran,(100,100,100), (0,0,800,800)) # fond d'écran 
-
+listeCases = [] # array of cases I will create 
+letter=65 # ASCII CODE for letter A, will be usefull for piece name
+number=8  #number's name  of piece (will begin to A8, B8 , C8, ... ,A1)
+yInitial,xInitiale =100,100  # where begins the piece's placement
+pygame.draw.rect(ecran,(100,100,100), (0,0,800,800)) # background
 
 y=yInitial
-for i in range (8):
-    x=xInitiale
-    for j in range (8):
-        if (i + j) %2 == 0 : couleur = (201,209,242)
-        else : couleur = (89, 113, 212)
-        nomCase= chr(nb)+str(j+1)
-        case= Case(ecran,nomCase,x,y,couleur,board[i][j])
-        case.activerCase()
-        listeCases.append(case)
-        pygame.display.flip()  # actualise    
-        
-        x+=dimensionCase
-    nb+=1
-    y+=dimensionCase
-    
 
-print(len(listeCases))
+# for i in range (8):
+#     x=xInitiale
+#     for j in range (8):
+#         if (i + j) %2 == 0 : couleur = (201,209,242) # color
+#         else : couleur = (89, 113, 212) # color
+
+#         nomCase= chr(letter)+str(number)## case name ( to get the name from A8 to H1)
+#         letter+=1 ##increase the letter for name 
+        
+#         case= Case(ecran,nomCase,x,y,couleur,board[i][j]) #creation of the case
+#         listeCases.append(case)
+        
+#         pygame.display.flip()  # actualise    
+#         x+=dimensionCase #increase of case dimension for placement
+#     y+=dimensionCase #increase y for placment 
+    
+#     letter=65 #piece letter
+#     number-=1  ## piece numbrt
 
 while continuer:
-    nb=65
-    for i in listeCases:
-        i.activerCase()
+    letter=65 # ASCII CODE for letter A, will be usefull for piece name
+    number=8  #number's name  of piece (will begin to A8, B8 , C8, ... ,A1)
+    x,y= xInitiale,yInitial
+    
     for event in pygame.event.get():
+        x,y= xInitiale, yInitial
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
             continuer = False
-        # if event.type == pygame.MOUSEBUTTONUP:
-            # x,y = pygame.mouse.get_pos()
-            # for case in listeCases:
-            
-            # if case.x <= x <= case.x+dimensionCase and case.y <= y <= case.y+dimensionCase:
-                # print (case.nom)
-       
+        number = 8
+        letter=65 #piece letter
+        for i in range (8):
+            x=xInitiale
+            for j in range (8):
+                if (i + j) %2 == 0 : couleur = (201,209,242) # color
+                else : couleur = (89, 113, 212) # color
 
+                nomCase= chr(letter)+str(number)## case name ( to get the name from A8 to H1)
+                letter+=1 ##increase the letter for name 
+                
+                case= Case(ecran,nomCase,x,y,couleur,board[i][j]) #creation of the case
+                case.activeCase(event) # activate the case I just created
+                listeCases.append(case)
+                
+                pygame.display.flip()  # actualise    
+                x+=dimensionCase #increase of case dimension for placement
+            number-=1  ## piece number
+            y+=dimensionCase #increase y for placment 
+            letter=65 #piece letter
+
+    
+    # for event in pygame.event.get(): ## THIS PART IS NOT WORKING aymore Idk why 
+
+    #     if event.type == pygame.MOUSEBUTTONUP:
+    #         x,y = pygame.mouse.get_pos()
+    #         for cases in listeCases: 
+    #             print(cases.activeCase()) #why this doesn't work ? 
 
 pygame.quit()
