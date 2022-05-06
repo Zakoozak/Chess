@@ -9,6 +9,7 @@ def initBoard() :
             [0,0,0,0,0,0,0,0],
             
             [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
             [1,1,1,1,1,1,1,1],
             [5,2,3,50,9,3,2,5]]
     return board
@@ -56,12 +57,11 @@ class Case:
         for event in pygame.event.get():
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                 continuer = False
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 x,y = pygame.mouse.get_pos()
                 print (x,y)                   
                 if self.x <= x <= self.x+dimensionCase and self.y <= y <= self.y+dimensionCase:
                     print(self.nom)
-                   
 
 
 pygame.init()
@@ -78,33 +78,38 @@ yInitial,xInitiale =100,100  # où commence le positionnement des picèces
 pygame.draw.rect(ecran,(100,100,100), (0,0,800,800)) # fond d'écran 
 
 
-
 y=yInitial
-for i in range (7):
-    
+for i in range (8):
     x=xInitiale
-    for j in range (7):
+    for j in range (8):
         if (i + j) %2 == 0 : couleur = (201,209,242)
         else : couleur = (89, 113, 212)
-        nomCase= chr(nb)+str(j)
+        nomCase= chr(nb)+str(j+1)
         case= Case(ecran,nomCase,x,y,couleur,board[i][j])
         case.activerCase()
         listeCases.append(case)
-        
-        # ecran.blit(piece,(x,y))#placer l'image de la pièce 
         pygame.display.flip()  # actualise    
         
         x+=dimensionCase
     nb+=1
     y+=dimensionCase
-for i in range (len(listeCases)):
-    print (listeCases[i].getNom)
+    
+
+print(len(listeCases))
+
 while continuer:
     nb=65
-    
+    for i in listeCases:
+        i.activerCase()
     for event in pygame.event.get():
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
             continuer = False
+        # if event.type == pygame.MOUSEBUTTONUP:
+            # x,y = pygame.mouse.get_pos()
+            # for case in listeCases:
+            
+            # if case.x <= x <= case.x+dimensionCase and case.y <= y <= case.y+dimensionCase:
+                # print (case.nom)
        
 
 
