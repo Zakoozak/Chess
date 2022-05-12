@@ -5,7 +5,7 @@ import pygame
 # initialisation board
 
 def emptyBoard():
-    emptyBoard =  [[0, 0, 0, 0, 0, 0, 0],
+    emptyBoard2 =  [[0, 0, 0, 0, 0, 0, 0,0],
             [0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0], 
@@ -14,11 +14,19 @@ def emptyBoard():
             [0,0,0,0,0,0,0,0], 
             [0,0,0,0,0,0,0,0], 
             [0,0,0,0,0,0,0,0]]
-    return emptyBoard
+    return emptyBoard2
 
-def tradBoard(listeCases):
-    emptyBoard= emptyBoard()
-    return np.reshape(listeCases,8,8)
+def caseToNumber(listeCases):
+    emB = emptyBoard()
+    k=0
+    print ((listeCases))
+    for i in range(8):
+        for j in range(8):
+            emB[i][j]= listeCases[k].piece
+            k+=1
+        
+    print (emB)
+    return (emB)
 
 def initBoard() :  
     board =[[-5,-2,-3,-9,-50,-3,-2,-5],
@@ -50,6 +58,7 @@ def drawBoard(board):
             nomCase= chr(letter)+str(number)## case name ( to get the name from A8 to H1)
             letter+=1 ##increase the letter for name 
             
+            print(board[i][j])
             case= Case(ecran,nomCase,x,y,couleur,board[i][j]) #creation of the case
             listeCases.append(case)
             
@@ -153,6 +162,8 @@ yInitial,xInitiale =100,100  # where begins the piece's placement
 pygame.draw.rect(ecran,(100,100,100), (0,0,800,800)) # background
 
 listeCases = drawBoard(board)
+board= caseToNumber(listeCases)
+
 while continuer:
     letter=65 # ASCII CODE for letter A, will be usefull for piece name
     number=8  #number's name  of piece (will begin to A8, B8 , C8, ... ,A1)
@@ -164,7 +175,7 @@ while continuer:
         if event.type == pygame.KEYDOWN:
             
             deplacement("A1","D4")
-            drawBoard(listeCases)
+            drawBoard(board)
         for case in listeCases : 
             case.activeCase(event)
 
