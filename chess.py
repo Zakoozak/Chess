@@ -1,5 +1,6 @@
+import io
+import sys
 from tkinter import E
-import numpy as np
 import pygame
 
 # initialisation board
@@ -19,13 +20,10 @@ def emptyBoard():
 def caseToNumber(listeCases):
     emB = emptyBoard()
     k=0
-    print ((listeCases))
     for i in range(8):
         for j in range(8):
             emB[i][j]= listeCases[k].piece
             k+=1
-        
-    print (emB)
     return (emB)
 
 def initBoard() :  
@@ -58,10 +56,8 @@ def drawBoard(board):
             nomCase= chr(letter)+str(number)## case name ( to get the name from A8 to H1)
             letter+=1 ##increase the letter for name 
             
-            print(board[i][j])
             case= Case(ecran,nomCase,x,y,couleur,board[i][j]) #creation of the case
-            listeCases.append(case)
-            
+            listeCases.append(case)    
             
             x+=dimensionCase #increase of case dimension for placement
             pygame.display.flip()  # actualise   
@@ -111,13 +107,17 @@ class Case:
     def activeCase(self,event):
         if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
             continuer = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONUP:
             x,y = pygame.mouse.get_pos()               
             if self.x <= x <= self.x+dimensionCase and self.y <= y <= self.y+dimensionCase: # if cursos in case , return the name of the case
                 print(self.nom)
+                # return(self.nom)
+            
 
 def deplacement(case1, case2):
-    
+    if case1 ==0 or case2==0:
+        print("veuillez cliquez sur un autre case")
+        return
     for i in range (len(listeCases)):
             if listeCases[i].nom == case1 :
                 caseA=listeCases[i]
@@ -163,6 +163,13 @@ pygame.draw.rect(ecran,(100,100,100), (0,0,800,800)) # background
 
 listeCases = drawBoard(board)
 board= caseToNumber(listeCases)
+nbCliques = 0
+deplacement1,deplacement2= 0,0
+
+old_stdout = sys.stdout
+new_stdout = io.StringIO()
+sys.stdout = new_stdout
+
 
 while continuer:
     letter=65 # ASCII CODE for letter A, will be usefull for piece name
@@ -172,13 +179,18 @@ while continuer:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             continuer = False
-        if event.type == pygame.KEYDOWN:
             
-            deplacement("A1","D4")
-            drawBoard(board)
-        for case in listeCases : 
-            case.activeCase(event)
-
-
+        if event.type== pygame.MOUSEBUTTONUP:
+            for case in listeCases :
+                    case.activeCase(event)
+                    if deplacement1!= 0 : 
+                        deplacement1 =new_stdout.getvalue()
+                    elif deplacement2 != 0 : 
+                        deplacement2 =new_stdout.getvalue()
+                    else:
+                        deplacement(deplacement1,deplacement2)
+                        drawBoard(board)
+                        deplacement1=0
+                        deplacement2=0
 
 pygame.quit()
